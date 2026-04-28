@@ -1,18 +1,62 @@
 @extends('main')
 
-@section('title', 'Главная')
+@section('title', 'Создать поездку')
 
 @section('content')
-    <div class="welcome" style="text-align: center; padding: 50px 20px;">
-        <h1 style="font-size: 2.5em; color: #28a745;">Поиск совместных поездок</h1>
-        <p style="margin: 30px 0;">
-            <a href="{{ url('/rides') }}" class="btn" style="font-size: 1.2em; padding: 12px 30px;">Найти поездку</a>
-            @guest
-                <a href="{{ url('/login') }}" class="btn" style="font-size: 1.2em; padding: 12px 30px; background: #17b82f;">Вход</a>
-                <a href="{{ url('/register') }}" class="btn" style="font-size: 1.2em; padding: 12px 30px; background: #6c757d;">Регистрация</a>
-            @endguest
-        </p>
-        
-        <hr style="margin: 40px 0;">
-    </div>
+    <form action="{{ url('/rides') }}" method="POST">
+        @csrf
+
+        <div class="form-group">
+            <label>Откуда</label>
+            <input type="text" name="from" value="{{ old('from') }}" placeholder="Тюмень" required>
+        </div>
+
+        <div class="form-group">
+            <label>Куда</label>
+            <input type="text" name="to" value="{{ old('to') }}" placeholder="Тобольск" required>
+        </div>
+
+        <div class="form-group">
+            <label>Дата и время</label>
+            <input type="datetime-local" name="departure_time" value="{{ old('departure_time') }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Свободных мест</label>
+            <input type="number" name="free_seats" value="{{ old('free_seats', 3) }}" min="1" max="8" required>
+        </div>
+
+        <div class="form-group">
+            <label>Цена (руб)</label>
+            <input type="number" name="price" value="{{ old('price', 0) }}" step="50">
+        </div>
+
+        <div class="form-group">
+            <label>Регулярность</label>
+            <select name="regularity">
+                <option value="once" selected>Разово</option>
+                <option value="daily">Ежедневно</option>
+                <option value="weekdays">По будням</option>
+                <option value="weekly">Еженедельно</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Машина</label>
+            <select name="car_id" required>
+                <option value="">Выберите машину</option>
+                @foreach(auth()->user()->cars as $car)
+                    <option value="{{ $car->id }}">{{ $car->brand }} {{ $car->model }} ({{ $car->license_plate }})</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Описание (необязательно)</label>
+            <textarea name="description" rows="3" placeholder="Укажите особенности поездки...">{{ old('description') }}</textarea>
+        </div>
+
+        <button type="submit" class="btn">Сохранить</button>
+        <a href="{{ url('/my-rides') }}" class="btn-back">Назад</a>
+    </form>
 @endsection

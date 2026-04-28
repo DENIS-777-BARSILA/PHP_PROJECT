@@ -61,7 +61,7 @@ class RideController extends Controller
             'departure_time' => 'required|date',
             'free_seats' => 'required|integer|min:1|max:8',
             'price' => 'nullable|numeric|min:0',
-            'description' => 'nullable|string',
+          //  'description' => 'nullable|string',
             'status' => 'required|string',
         ]);
 

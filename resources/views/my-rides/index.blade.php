@@ -3,7 +3,7 @@
 @section('title', 'Мои поездки')
 
 @section('content')
-    <a href="{{ url('/admin/rides/create-no-auth') }}" class="btn">Создать поездку</a>
+    <a href="{{ url('/create-ride') }}" class="btn">Создать поездку</a>
     
     @if($rides->count() > 0)
         <div class="table-responsive">

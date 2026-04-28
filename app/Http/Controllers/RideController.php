@@ -27,34 +27,41 @@ class RideController extends Controller
 
     public function create()
     {
-        return view('my-cars.index');
+        return view('my-rides.create');
     }
 
     public function save(Request $request)
-    {
-        $validated = $request->validate([
-            'from' => 'required|string|max:255',
-            'to' => 'required|string|max:255',
-            'departure_time' => 'required|date',
-            'free_seats' => 'required|integer|min:1|max:8',
-            'price' => 'nullable|numeric|min:0',
-            'regularity' => 'required|string',
-            'description' => 'nullable|string',
-        ]);
+{
+    $validated = $request->validate([
+        'from' => 'required|string|max:255',
+        'to' => 'required|string|max:255',
+        'departure_time' => 'required|date',
+        'free_seats' => 'required|integer|min:1|max:8',
+        'price' => 'nullable|numeric|min:0',
+        'regularity' => 'required|string',
+        'car_id' => 'required|exists:cars,id',
+    ]);
 
-        $validated['driver_id'] = auth()->id();
-        $validated['car_id'] = 1;
-        $validated['status'] = 'active';
 
-        Ride::create($validated);
 
-        return redirect('/my-rides')->with('success', 'Поездка создана');
-    }
+    $validated['driver_id'] = auth()->id();
+    $validated['status'] = 'active';
+
+    Ride::create($validated);
+
+    return redirect('/my-rides')->with('success', 'Поездка создана');
+}
+
+public function showMyRide($id)
+{
+    $ride = Ride::where('driver_id', auth()->id())->with(['driver', 'car'])->findOrFail($id);
+    return view('my-rides.show', compact('ride'));
+}
 
     public function edit($id)
     {
         $ride = Ride::where('driver_id', auth()->id())->findOrFail($id);
-        return view('rides.edit', compact('ride'));
+        return view('my-rides/edit', compact('ride'));
     }
 
     public function update(Request $request, $id)
@@ -67,7 +74,6 @@ class RideController extends Controller
             'departure_time' => 'required|date',
             'free_seats' => 'required|integer|min:1|max:8',
             'price' => 'nullable|numeric|min:0',
-            'description' => 'nullable|string',
             'status' => 'required|string',
         ]);
 

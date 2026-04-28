@@ -11,9 +11,7 @@ use App\Http\Controllers\ProfileController;
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-Route::get('/create-ride', function () {
-    return 'Тест без контроллера';
-});
+
 
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -74,6 +72,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/rides/{id}/edit', [UserRideController::class, 'edit'])->name('rides.edit');
     Route::put('/rides/{id}', [UserRideController::class, 'update'])->name('rides.update');
     Route::delete('/rides/{id}', [UserRideController::class, 'destroy'])->name('rides.destroy');
+    Route::get('/my-rides/{id}', [UserRideController::class, 'showMyRide'])->name('my-rides.show');
+
+    Route::get('/create-ride', [App\Http\Controllers\RideController::class, 'create'])->name('create.ride');
 
     
     Route::post('/rides/{id}/book', [BookingController::class, 'save'])->name('bookings.store');
